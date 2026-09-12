@@ -121,8 +121,8 @@ def test_migration_downgrade_upgrade(superuser_engine: Engine) -> None:
     """Test that migration downgrade drops the table and upgrade recreates it."""
     alembic_cfg = Config("alembic.ini")
 
-    # downgrade 1 step
-    command.downgrade(alembic_cfg, "-1")
+    # downgrade to just before agent_runs
+    command.downgrade(alembic_cfg, "c4250b2c09d2")
 
     with superuser_engine.connect() as conn:
         with pytest.raises(Exception):
