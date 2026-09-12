@@ -156,14 +156,14 @@ def test_migration_downgrade_upgrade(superuser_engine: Engine) -> None:
     """Test that migration downgrade drops the table and upgrade recreates it."""
     alembic_cfg = Config("alembic.ini")
 
-    # downgrade 1 step
-    command.downgrade(alembic_cfg, "-1")
+    # downgrade to the revision immediately before evidence
+    command.downgrade(alembic_cfg, "644b6b3e6eb8")
 
     with superuser_engine.connect() as conn:
         with pytest.raises(Exception):
             conn.execute(text("SELECT * FROM evidence"))
 
-    # upgrade 1 step
+    # upgrade back to head
     command.upgrade(alembic_cfg, "head")
 
     with superuser_engine.connect() as conn:
